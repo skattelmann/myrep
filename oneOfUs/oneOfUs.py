@@ -20,9 +20,9 @@ def sendSolution(sol):
 	
 	strSol = strSol[:-1]
 	print strSol
-	#payload = {'name': 'SpaceMonkey', 'password': 'schniffi123', 'path': strSol}
+	#payload = {'name': 'SpaceMonkey', 'password': '******', 'path': strSol}
 	#r = requests.post("http://www.hacker.org/oneofus/", params=payload)
-	params = urllib.urlencode({'name': 'SpaceMonkey', 'password': 'schniffi123', 'path': strSol})
+	params = urllib.urlencode({'name': 'SpaceMonkey', 'password': '******', 'path': strSol})
 	f = urllib.urlopen("http://www.hacker.org/oneofus/", params)
 	print "Loesung gesendet! \n"
 	

@@ -9,7 +9,7 @@ def sendSolution(sol, n, level):
 	for i in range(n):
 		strSol += str(sol[i])
 	
-	params = urllib.urlencode({'name': 'SpaceMonkey', 'password': 'schniffi123', 'lvl': str(level), 'sol': strSol})
+	params = urllib.urlencode({'name': 'SpaceMonkey', 'password': '******', 'lvl': str(level), 'sol': strSol})
 	f = urllib.urlopen("http://www.hacker.org/cross/", params)
 	
 	print "Loesung gesendet! \n"
