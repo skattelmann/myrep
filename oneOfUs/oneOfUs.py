@@ -28,7 +28,7 @@ def sendSolution(sol):
 	
 
 def getNeighbors():
-	htmlCode = requests.get('http://www.hacker.org/oneofus/', params={'name': 'SpaceMonkey', 'password': 'schniffi123'}).content
+	htmlCode = requests.get('http://www.hacker.org/oneofus/', params={'name': 'SpaceMonkey', 'password': '******'}).content
 	index = htmlCode.find('FlashVars') + 20
 	dimx = ""
 	dimy = ""
@@ -138,19 +138,3 @@ def solve(neighbors):
 					currentPath = currentPath[:newIndex+1] + newTail
 	
 	return currentPath
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	

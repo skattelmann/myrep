@@ -17,7 +17,7 @@ def sendSolution(sol, n, level):
 
 def getGameData():
 
-	payload = {'name': 'SpaceMonkey', 'password': 'schniffi123'}
+	payload = {'name': 'SpaceMonkey', 'password': '******'}
 	dataHTML = requests.get(url='http://www.hacker.org/cross/', params=payload).text
 
 	start = dataHTML.find('boardinit')
