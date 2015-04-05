@@ -48,12 +48,15 @@ def send_solution(args, sol_payload):
 
 
 def solve(args, game_mod):
+    if args.level != None:
+        print("Solving Level " + str(args.level) + "...")
     raw_board = get_raw_board(args.username, args.password, args.game, args.level)
     sol_payload = game_mod.solve(raw_board)
     print("Solution found!")
     send_solution(args, sol_payload)
     if args.follow:
-        args.level += 1
+        if args.level != None: 
+            args.level += 1
         solve(args, game_mod)
 
 
