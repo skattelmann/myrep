@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 import argparse
-from argparse import RawTextHelpFormatter
+import imp
 import requests
 
 #maps game name to triples of [url name, html id, cap size]
@@ -27,23 +27,39 @@ def get_raw_board(username, password, game, level):
     if level!=None:
         payload['gotolevel'] = str(level)
         payload['go'] = 'Go+To+Level'
-    html_code = str(requests.get('http://www.hacker.org/' + url_map[game][0] + '/', params=payload).content)
+    html_code = str(requests.get('http://www.hacker.org/' + url_map[game][0] + '/', \
+        params=payload).content)
     raw_board_start = html_code.find(url_map[game][1]) + url_map[game][2]
     raw_board_end = html_code[raw_board_start:].find('"')
     raw_board = html_code[raw_board_start:raw_board_start + raw_board_end]
     return raw_board
 
 
-def solve(args):
+def send_solution(args, sol_payload):
+    id_payload = {'name': args.username, 'password': args.password}
+    payload = dict(list(id_payload.items()) + list(sol_payload.items()))
+    r = requests.post('http://www.hacker.org/' + url_map[args.game][0] + '/', params=payload)
+    if r.status_code != 200:
+        print("Solution could not be sent!\n")
+    elif 'your solution sucked' not in r.text:
+        print("Solution was sent and is CORRECT!\n")
+    else:
+        print("Solution was sent but is NOT CORRECT!\n")
+
+
+def solve(args, game_mod):
     raw_board = get_raw_board(args.username, args.password, args.game, args.level)
+    sol_payload = game_mod.solve(raw_board)
+    print("Solution found!")
+    send_solution(args, sol_payload)
     if args.follow:
         args.level += 1
-        solve(args)
+        solve(args, game_mod)
 
 
 def main():
     #argument parsing
-    parser = argparse.ArgumentParser(formatter_class=RawTextHelpFormatter)
+    parser = argparse.ArgumentParser(formatter_class=argparse.RawTextHelpFormatter)
 
     #user specific data
     parser.add_argument("-u", "--username", default="SpaceMonkey", \
@@ -79,12 +95,14 @@ def main():
                             'oou', 'oneofus']:
         print("You requested an invalid game, see --help for available games.")
         return
-    else:
-        args.game = name_map[args.game]
 
-    solve(args)
+    args.game = name_map[args.game]
+    game_mod = imp.load_source(args.game, args.game + '/' + args.game + '.py')
+
+    print("Solving " + args.game.upper() + " ...\n")
+    solve(args, game_mod)
     
-    print("\nFinished successfully!") 
+    print("Finished successfully!") 
 
 
 if __name__ == "__main__":

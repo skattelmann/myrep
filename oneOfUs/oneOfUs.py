@@ -28,7 +28,7 @@ def sendSolution(sol):
 	
 
 def getNeighbors():
-	htmlCode = requests.get('http://www.hacker.org/oneofus/', params={'name': 'SpaceMonkey', 'password': '******'}).content
+	htmlCode = requests.get('http://www.hacker.org/oneofus/', params={'name': 'SpaceMonkey', 'password': 'schlurps123'}).content
 	index = htmlCode.find('FlashVars') + 20
 	dimx = ""
 	dimy = ""
