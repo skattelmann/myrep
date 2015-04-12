@@ -65,18 +65,16 @@ def main():
     parser = argparse.ArgumentParser(formatter_class=argparse.RawTextHelpFormatter)
 
     #user specific data
-    parser.add_argument("-u", "--username", default="SpaceMonkey", \
-        help="specific username, default is \'SpaceMonkey\'")
-    parser.add_argument("-p", "--password", default="schlurps123", \
-        help="specific password, default is \'schlurps123\'")
+    parser.add_argument("-u", "--username", help="hacker.org username")
+    parser.add_argument("-p", "--password", help="user password")
 
     #game to solve (required)
     parser.add_argument("-g", "--game", default=None, \
         help="specific game to solve; the following games are available: \n\
-    - Mortal Coil (\'mc\' or \'mortal_coil\') \n\
-    - Runaway Robot (\'rr\' or \'runaway_robot\') \n\
-    - Crossflip (\'cf\' or \'crossflip\') \n\
-    - OneOfUs (\'oou\' or \'oneofus\')")
+- Mortal Coil (\'mc\' or \'mortal_coil\') \n\
+- Runaway Robot (\'rr\' or \'runaway_robot\') \n\
+- Crossflip (\'cf\' or \'crossflip\') \n\
+- OneOfUs (\'oou\' or \'oneofus\')")
     
     #level control
     parser.add_argument("-l", "--level", type=int, \
