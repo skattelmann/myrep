@@ -1,53 +1,24 @@
 import ctypes
 import numpy as np
-import urllib
-import requests
+import os
 import time
 
-def sendSolution(sol, n, level):
-	strSol = ''
-	for i in range(n):
-		strSol += str(sol[i])
-	
-	params = urllib.urlencode({'name': 'SpaceMonkey', 'password': 'schlurps123', 'lvl': str(level), 'sol': strSol})
-	f = urllib.urlopen("http://www.hacker.org/cross/", params)
-	
-	print "Loesung gesendet! \n"
-	
+curr_folder = os.getcwd()
+crossflip_helper = ctypes.CDLL(curr_folder + '/crossflip/crossflip_helper.so')
 
-def getGameData():
-
-	payload = {'name': 'SpaceMonkey', 'password': 'schlurps123'}
-	dataHTML = requests.get(url='http://www.hacker.org/cross/', params=payload).text
-
-	start = dataHTML.find('boardinit')
+def getGameData(raw_board):
 	board = [[]]
-	i = 0
-	string = dataHTML[start+13+i]
-	while(string != '"'):
-		if string == ',':
+	for i in range(len(raw_board)):
+		if raw_board[i] == ',':
 			board.append([])
 		else:
-			board[-1].append(int(string))
-		i += 1
-		string = dataHTML[start+13+i]
+			board[-1].append(int(raw_board[i]))
 		
-	start = dataHTML.find('var level')
-	level = ''
-	i = 0
-	string = dataHTML[start+12+i]
-	while(string != ';'):
-		level += string
-		i += 1
-		string = dataHTML[start+12+i]
-
-	return ( np.array(board, dtype = 'i') , level)
-      
+	return np.array(board, dtype = 'i')
 
 
-def start():
-  
-	(gamedata, lvl) = getGameData()
+def solve(raw_board, info_flag=False):
+	gamedata = getGameData(raw_board)
 	(n1,n2) = np.shape(gamedata) 
 	
 	Mrows = n1*n2
@@ -58,21 +29,25 @@ def start():
 	M = np.zeros((Mrows,Mcols), dtype=np.uint64)
 	x = np.zeros(n1*n2, dtype=np.int32)
 	
-	print "Level: " , lvl
-	print "Groesse der Matrix: " , "{:,}".format( M.size )
-	print "Normale Groesse: " , "{:,}".format( (n1*n2+1)*n1*n2 )
+	if info_flag:
+		print("----------------------------------------------------------")
+		print("Raw size of the matrix: " , "{:,}".format( M.size ))
+		print("Normalized size: " , "{:,}".format( (n1*n2+1)*n1*n2 ))
 	
 	tic = time.time()
 	crossflip_helper.starter( ctypes.c_void_p(gamedata.ctypes.data) ,  ctypes.c_int(n1) ,  ctypes.c_int(n2) , ctypes.c_void_p(M.ctypes.data) , ctypes.c_void_p(x.ctypes.data) , ctypes.c_int(n1*n2) )
 	toc = time.time() - tic
 
-	print "Gauss-Elimination: " , toc , "s"
+	if info_flag:
+		print("Gaussian Elimination: " , toc , "s")
+		print("----------------------------------------------------------")
 	
-	sendSolution(x, n1*n2, lvl)
+	strSol = ''
+	for i in range(n1*n2):
+		strSol += str(x[i])
+
+	sol_params = {'sol': strSol}
+	return sol_params	
 	
 	
-	
-#################
-crossflip_helper = ctypes.CDLL('/home/sascha/git/myrep/hacker.org_solver/crossflip/crossflip_helper.so')
-while 1:  
-	start()
+

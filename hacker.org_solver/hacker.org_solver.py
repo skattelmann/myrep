@@ -38,9 +38,9 @@ def get_raw_board(username, password, game, level):
 def send_solution(args, sol_payload):
     id_payload = {'name': args.username, 'password': args.password}
     payload = dict(list(id_payload.items()) + list(sol_payload.items()))
-    r = requests.post('http://www.hacker.org/' + url_map[args.game][0] + '/', params=payload)
+    r = requests.post('http://www.hacker.org/' + url_map[args.game][0] + '/', data=payload)
     if r.status_code != 200:
-        print("Solution could not be sent!\n")
+        print("Solution could not be sent! Error code " + str(r.status_code) + ".\n")
     elif 'your solution sucked' not in r.text:
         print("Solution was sent and is CORRECT!\n")
     else:
@@ -49,9 +49,9 @@ def send_solution(args, sol_payload):
 
 def solve(args, game_mod):
     if args.level != None:
-        print("Solving Level " + str(args.level) + "...")
+        print("Solving Level " + str(args.level) + " ...")
     raw_board = get_raw_board(args.username, args.password, args.game, args.level)
-    sol_payload = game_mod.solve(raw_board)
+    sol_payload = game_mod.solve(raw_board, info_flag=args.info)
     print("Solution found!")
     send_solution(args, sol_payload)
     if args.follow:
@@ -82,13 +82,13 @@ def main():
     parser.add_argument("-f", "--follow", action="store_true", default=False, \
         help="solve all levels starting from a specific level, turned off by default")
 
-    parser.add_argument("-d", "--debug", action="store_true", default=False, \
-        help="show additional debug information")
+    parser.add_argument("--info", action="store_true", default=False, \
+        help="show additional information (e.g. size of problem instances)")
 
     args = parser.parse_args()
 
     if args.game==None:
-        print("An available game is required!") 
+        print("A solver for hacker.org games. Use --help for available options.") 
         return
     elif args.game not in [ 'mc', 'mortal_coil', \
                             'rr', 'runaway_robot', \

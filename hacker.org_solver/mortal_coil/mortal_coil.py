@@ -4,7 +4,6 @@ import numpy as np
 import time
 
 def recSearch(board, ii, jj, dirs):
-
     # bottom
     i = ii+1
     j = jj
@@ -109,22 +108,6 @@ def recSearch(board, ii, jj, dirs):
         return False
 
 
-def solve(raw_board):
-    board = getBoard(raw_board)
-    (dimx, dimy) = board.shape
-    for i in range(1,dimx-1):
-        for j in range(1,dimy-1):
-            if board[i,j] == 0:
-                board[i,j] = 2
-                new_dirs = recSearch(board, i, j, [])
-                if new_dirs != False:
-                    sol_string = "".join(new_dirs).upper()
-                    sol_params = {'x': str(j-1), 'y': str(i-1), 'path': sol_string}
-                    return sol_params
-                else:
-                    board[i,j] = 0
-
-                
 def getBoard(raw_board):
     htmlCode = raw_board
     index = 2
@@ -158,3 +141,21 @@ def getBoard(raw_board):
     splitted_board.insert(0, (dimx+2)*[1])
 
     return np.array(splitted_board)
+
+
+def solve(raw_board, info_flag=False):
+    board = getBoard(raw_board)
+    (dimx, dimy) = board.shape
+    for i in range(1,dimx-1):
+        for j in range(1,dimy-1):
+            if board[i,j] == 0:
+                board[i,j] = 2
+                new_dirs = recSearch(board, i, j, [])
+                if new_dirs != False:
+                    sol_string = "".join(new_dirs).upper()
+                    sol_params = {'x': str(j-1), 'y': str(i-1), 'path': sol_string}
+                    return sol_params
+                else:
+                    board[i,j] = 0
+
+                

@@ -12,5 +12,3 @@ genAb: crossflip_helper.o
 clean:
 	rm *.so
 .PHONY: clean 
-
-#gcc -shared -Wl,-soname,testlib -o testlib.so -fPIC testlib.c

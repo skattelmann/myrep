@@ -19,7 +19,7 @@ def getFIELD(gamedata):
     field = []
     for i in range( 0, getSIZE(gamedata)[1] ):
         field.append([])
-        for j in xrange( 0, getSIZE(gamedata)[0] ):
+        for j in range( 0, getSIZE(gamedata)[0] ):
             if( fieldUNICODE[ ( i * getSIZE(gamedata)[0] ) + j ] == '.' ):
                 field[i].append( 0 )
             else:
@@ -63,8 +63,8 @@ def getMINMAX(gamedata):
 def printField(field):
     for i in range(len(field)):
         for j in range (len(field[i])):
-            print field[i][j],
-        print ''
+            print(field[i][j]),
+        print('')
 
 
 def recPathfinder(currentPath, field, length, solution):
@@ -151,13 +151,15 @@ def solve(raw_board, info_flag=False):
     field = getFIELD(gamedata)
     insMin = getMINMAX(gamedata)[0]
     insMax = getMINMAX(gamedata)[1]
-        
-    print("Level: " + str(lvl))
-    print("- Spielfeldgroesse: " + str(sizeX) + " * " + str(sizeY))
-    print("- Minimale Schleifenlaenge: " + str(insMin))
-    print("- Maximale Schleifenlaenge: " + str(insMax))
     solution = ''
-        
+
+    if info_flag:
+        print("----------------------------------------------------------")
+        print("Level: " + str(lvl))
+        print("- Board size: " + str(sizeX) + " * " + str(sizeY))
+        print("- Minimum loop length: " + str(insMin))
+        print("- Maximum loop length: " + str(insMax))
+
 ##    #feld wird ausgesucht
 ##    limit = 0.22
 ##    print "Suche nach geeignetem Feld ...",
@@ -172,18 +174,23 @@ def solve(raw_board, info_flag=False):
 ##        print ".",
       #ende der suche
         
-    print('\nStarte Pfadberechnung...',)        
+    if info_flag:
+        print('\nStarting path calculations ...\nProgress: ', end="")        
      
     for currentLength in range(insMin, insMax + 1 ):
         lastPoints = generateLastPoints(field, currentLength)
-        print(".",)  
+        if info_flag:
+            print(".", end="", flush=True)  
             
         for currentLastPoint in lastPoints: 
             result = recPathfinder([currentLastPoint], field, currentLength, solution)
-            if(result == 1): 
+            if(result != False): 
                 break
                 
-        if(result == 1): 
+        if(result != False): 
             break
 
-    print("")
+    if info_flag:
+        print("\n----------------------------------------------------------") 
+    
+    return {'path': result}
