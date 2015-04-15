@@ -154,7 +154,7 @@ def solve(raw_board, info_flag=False):
                 if new_dirs != False:
                     sol_string = "".join(new_dirs).upper()
                     sol_params = {'x': str(j-1), 'y': str(i-1), 'path': sol_string}
-                    return sol_params
+                    return (True, sol_params)
                 else:
                     board[i,j] = 0
 

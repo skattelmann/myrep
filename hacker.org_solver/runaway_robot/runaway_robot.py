@@ -121,16 +121,16 @@ def checkField(field, sizeX, limit):
     sum4 = 0
     sum6 = 0
     
-    for i in range(sizeX/3):
-        for j in range(sizeX/3):
+    for i in range(int(sizeX/3)):
+        for j in range(int(sizeX/3)):
             sum3 += field[i][j]
 
-    for i in range(sizeX/4):
-        for j in range(sizeX/4):
+    for i in range(int(sizeX/4)):
+        for j in range(int(sizeX/4)):
             sum4 += field[i][j]
     
-    for i in range(sizeX/6):
-        for j in range(sizeX/6):
+    for i in range(int(sizeX/6)):
+        for j in range(int(sizeX/6)):
             sum6 += field[i][j]
             
     size3 = sizeX*sizeX/9
@@ -138,13 +138,12 @@ def checkField(field, sizeX, limit):
     size6 = sizeX*sizeX/36
 
     if( ( sum3/float(size3) + sum4/float(size4) + sum6/float(size6) ) / 3 > limit ):
-        return 1
+        return True
     else:
-        return 0
+        return False
 
-def solve(raw_board, info_flag=False):
+def solve(raw_board, info_flag=False, limit=0.25):
     gamedata = raw_board + '&'
-        
     lvl = getLVL(gamedata)
     sizeX = getSIZE(gamedata)[0]
     sizeY = getSIZE(gamedata)[1]
@@ -160,22 +159,15 @@ def solve(raw_board, info_flag=False):
         print("- Minimum loop length: " + str(insMin))
         print("- Maximum loop length: " + str(insMax))
 
-##    #feld wird ausgesucht
-##    limit = 0.22
-##    print "Suche nach geeignetem Feld ...",
-##    while(True):
-##        gamedataHTML = br.open('http://www.hacker.org/runaway/index.php?gotolevel=' + str(lvl) + '&go=Go+To+Level').read()
-##        gamedata = getGameDataAsString(gamedataHTML)
-##        sizeX = getSIZE(gamedata)[0]
-##        field = getFIELD(gamedata)
-##        if(checkField(field, sizeX, limit) == 1 or sizeX < 100):
-##            break
-##        limit -= 0.001
-##        print ".",
-      #ende der suche
-        
+    #board is chosen
     if info_flag:
-        print('\nStarting path calculations ...\nProgress: ', end="")        
+        print("Searching for suitable board, this might take some time ...")
+    if(checkField(field, sizeX, limit) == False and sizeX > 100):
+        return (False, limit-0.001)
+
+    if info_flag:
+        print("\nFound suitable board!")
+        print('Starting path calculations ...\nProgress: ', end="")        
      
     for currentLength in range(insMin, insMax + 1 ):
         lastPoints = generateLastPoints(field, currentLength)
@@ -193,4 +185,4 @@ def solve(raw_board, info_flag=False):
     if info_flag:
         print("\n----------------------------------------------------------") 
     
-    return {'path': result}
+    return (True, {'path': result})

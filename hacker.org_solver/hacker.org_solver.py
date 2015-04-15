@@ -51,7 +51,9 @@ def solve(args, game_mod):
     if args.level != None:
         print("Solving Level " + str(args.level) + " ...")
     raw_board = get_raw_board(args.username, args.password, args.game, args.level)
-    sol_payload = game_mod.solve(raw_board, info_flag=args.info)
+    (validation, sol_payload) = game_mod.solve(raw_board, info_flag=args.info)
+    while validation == False:
+        (validation, sol_payload) = game_mod.solve(raw_board, info_flag=args.info, limit=sol_payload)
     print("Solution found!")
     send_solution(args, sol_payload)
     if args.follow:

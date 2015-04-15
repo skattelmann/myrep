@@ -47,7 +47,7 @@ def solve(raw_board, info_flag=False):
 		strSol += str(x[i])
 
 	sol_params = {'sol': strSol}
-	return sol_params	
+	return (True, sol_params)	
 	
 	
 
